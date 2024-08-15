@@ -1,4 +1,4 @@
-![Build Status](https://dev.azure.com/charolareyes/Pipeline_java/_apis/build/status/ShaReyes.Pipeline_java?branchName=main)
+![Build Status](https://dev.azure.com/charolareyes/Pipeline_java/_apis/build/status/ShaReyes.pipelines-java?branchName=main)
 # Contributing
 
 This project welcomes contributions and suggestions.  Most contributions require you to agree to a
