@@ -16,7 +16,7 @@ stages:
         organization: 'ShaReyes'  # Organización en SonarCloud
         scannerMode: 'CLI'
         configMode: 'manual'
-        cliProjectKey: '6cdfce0b430470bae8915745d17928e49d8e31f8'  # Clave del proyecto en SonarCloud
+        cliProjectKey: 'SharoPipelines'  # Clave del proyecto en SonarCloud
         cliProjectName: 'SharoPipelines'  # Nombre del proyecto en SonarCloud
         cliProjectVersion: '1.0'  # Versión del proyecto (puedes ajustar este valor)
         extraProperties: |
