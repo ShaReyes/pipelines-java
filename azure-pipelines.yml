@@ -16,7 +16,7 @@ stages:
         organization: 'ShaReyes'  # Organización en SonarCloud
         scannerMode: 'CLI'
         configMode: 'file'
-        projectKey: 'SharoPipelines'  # Clave del proyecto en SonarCloud
+        projectKey: '6cdfce0b430470bae8915745d17928e49d8e31f8'  # Clave del proyecto en SonarCloud
         projectName: 'SharoPipelines'  # Nombre del proyecto en SonarCloud
         extraProperties: |
           sonar.java.binaries=**/target/classes
