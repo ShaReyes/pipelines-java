@@ -15,9 +15,10 @@ stages:
         SonarCloud: 'SonarCloud'  # Nombre de la conexión de servicio en Azure DevOps
         organization: 'ShaReyes'  # Organización en SonarCloud
         scannerMode: 'CLI'
-        configMode: 'file'
+        configMode: 'manual'
         projectKey: '6cdfce0b430470bae8915745d17928e49d8e31f8'  # Clave del proyecto en SonarCloud
         projectName: 'SharoPipelines'  # Nombre del proyecto en SonarCloud
+        projectVersion: '1.0'  # Versión del proyecto (puedes ajustar este valor)
         extraProperties: |
           sonar.java.binaries=**/target/classes
           sonar.coverage.jacoco.xmlReportPaths=$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml
@@ -64,4 +65,3 @@ stages:
         summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml"
         reportDirectory: "$(System.DefaultWorkingDirectory)/**/site/jacoco"
         failIfCoverageEmpty: true
-
