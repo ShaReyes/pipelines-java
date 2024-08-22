@@ -1,4 +1,4 @@
-
+![Link an image.](media/OCG.jpg)   
 [![Build Status](https://dev.azure.com/charolareyes/Pipeline_java/_apis/build/status%2FShaReyes.pipelines-java?branchName=main)](https://dev.azure.com/charolareyes/Pipeline_java/_build/latest?definitionId=7&branchName=main)
 # Contributing
 
