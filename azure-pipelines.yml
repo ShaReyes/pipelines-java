@@ -10,15 +10,15 @@ stages:
   - job: BuildJob
     steps:
     # Preparar análisis de SonarCloud
-    - task: SonarCloudPrepare@1
+    - task: SonarCloudPrepare@2
       inputs:
         SonarCloud: 'SonarCloud'  # Nombre de la conexión de servicio en Azure DevOps
         organization: 'ShaReyes'  # Organización en SonarCloud
         scannerMode: 'CLI'
         configMode: 'manual'
-        projectKey: '6cdfce0b430470bae8915745d17928e49d8e31f8'  # Clave del proyecto en SonarCloud
-        projectName: 'SharoPipelines'  # Nombre del proyecto en SonarCloud
-        projectVersion: '1.0'  # Versión del proyecto (puedes ajustar este valor)
+        cliProjectKey: '6cdfce0b430470bae8915745d17928e49d8e31f8'  # Clave del proyecto en SonarCloud
+        cliProjectName: 'SharoPipelines'  # Nombre del proyecto en SonarCloud
+        cliProjectVersion: '1.0'  # Versión del proyecto (puedes ajustar este valor)
         extraProperties: |
           sonar.java.binaries=**/target/classes
           sonar.coverage.jacoco.xmlReportPaths=$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml
@@ -36,10 +36,10 @@ stages:
         goals: 'package'
 
     # Ejecutar análisis de SonarCloud
-    - task: SonarCloudAnalyze@1
+    - task: SonarCloudAnalyze@2
 
     # Publicar resultados de SonarCloud
-    - task: SonarCloudPublish@1
+    - task: SonarCloudPublish@2
       inputs:
         pollingTimeoutSec: '300'
 
