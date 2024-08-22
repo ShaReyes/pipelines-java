@@ -25,7 +25,7 @@ stages:
   jobs:
   - job: DeployJob
     steps:
-    - task: PublishBuildArtifacts@2
+    - task: PublishBuildArtifacts@1
       inputs:
         pathtoPublish: '$(Build.ArtifactStagingDirectory)'
         artifactName: 'drop'
@@ -36,7 +36,7 @@ stages:
   - job: TestJob
     steps:
     - script: mvn test
-    - task: PublishCodeCoverageResults@1
+    - task: PublishCodeCoverageResults@2
       inputs:
         codeCoverageTool: "JaCoCo"
         summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml"
