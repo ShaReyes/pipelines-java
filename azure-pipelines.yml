@@ -25,7 +25,7 @@ stages:
   jobs:
   - job: DeployJob
     steps:
-    - task: PublishBuildArtifacts@1
+    - task: PublishBuildArtifacts@2
       inputs:
         pathtoPublish: '$(Build.ArtifactStagingDirectory)'
         artifactName: 'drop'
