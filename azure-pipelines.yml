@@ -17,7 +17,7 @@ stages:
         scannerMode: 'CLI'
         configMode: 'manual'
         cliProjectKey: 'ShaReyes_pipelines-java'  # Clave del proyecto en SonarCloud
-        cliProjectName: 'SharoPipelines'  # Nombre del proyecto en SonarCloud
+        cliProjectName: 'pipelines-java'  # Nombre del proyecto en SonarCloud
         cliProjectVersion: '1.0'  # Versión del proyecto (puedes ajustar este valor)
         extraProperties: |
           sonar.java.binaries=**/target/classes
