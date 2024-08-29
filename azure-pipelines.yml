@@ -20,7 +20,7 @@ stages:
         cliProjectName: 'pipelines-java'  # Nombre del proyecto en SonarCloud
         cliProjectVersion: '1.0'  # Versión del proyecto (puedes ajustar este valor)
         extraProperties: |
-          sonar.java.binaries=**/target/classes
+          sonar.java.binaries=**/target/helloworld
           sonar.coverage.jacoco.xmlReportPaths=$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml
 
     # Construir el proyecto con Maven
