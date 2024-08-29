@@ -13,7 +13,7 @@ stages:
     - task: SonarCloudPrepare@2
       inputs:
         SonarCloud: 'SonarCloud'  # Nombre de la conexión de servicio en Azure DevOps
-        organization: 'ShaReyes'  # Organización en SonarCloud
+        organization: 'shareyes1'  # Organización en SonarCloud
         scannerMode: 'CLI'
         configMode: 'manual'
         cliProjectKey: 'ShaReyes_pipelines-java'  # Clave del proyecto en SonarCloud
