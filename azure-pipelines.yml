@@ -23,6 +23,7 @@ stages:
           sonar.sources=.
           sonar.java.binaries=target/classes
           sonar.coverage.jacoco.xmlReportPaths=$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml
+          sonar.java.libraries=**/*.jar # Incluir todas las librerías (JARs) en el análisis
 
     # Construir el proyecto con Maven
     - task: Maven@4
