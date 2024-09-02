@@ -42,11 +42,14 @@ stages:
   - deployment: DeployToStaging
     environment: 
       name: 'Staging'  # Name of the staging environment
-    steps:
-      - task: DownloadBuildArtifacts@0
-        inputs:
-          artifactName: 'drop'  # Name of the artifact to download
-        # Task to download build artifacts
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - task: DownloadBuildArtifacts@0
+              inputs:
+                artifactName: 'drop'  # Name of the artifact to download
+
 
       - script: echo "Deploying to Staging"
         # Add your deployment steps here
