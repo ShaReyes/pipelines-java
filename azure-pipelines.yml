@@ -4,7 +4,7 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-stages:
+stages: 
 - stage: Build
   jobs:
   - job: BuildJob
@@ -34,40 +34,17 @@ stages:
       inputs:
         pollingTimeoutSec: '300'
 
-- stage: Build
-  jobs:
-  - job: BuildJob
-    steps:
-    - script: echo "Building the application"
-    
-    # Additional build steps here
-    - task: Maven@4
-      inputs:
-        mavenPomFile: 'pom.xml'
-        mavenOptions: '-Xmx3072m'
-        javaHomeOption: 'JDKVersion'
-        jdkVersionOption: '1.8'
-        jdkArchitectureOption: 'x64'
-        publishJUnitResults: true
-        testResultsFiles: '**/surefire-reports/TEST-*.xml'
-        goals: 'package'
-    - task: PublishBuildArtifacts@1
-      inputs:
-        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
-        artifactName: 'drop'
-
 - stage: Staging
   dependsOn: Build
   jobs:
   - job: DeployToStaging
-    environment: 'Staging'
+    environment: 'Staging'  # This is correctly placed within a job
     steps:
     - task: DownloadBuildArtifacts@0
       inputs:
         artifactName: 'drop'
     - script: echo "Deploying to Staging"
-      # Here you would add the steps to deploy to your staging environment
-      # This could include publishing the application, configuring settings, etc.
+      # Add your deployment steps here
 
 - stage: Test
   dependsOn: Staging
@@ -86,11 +63,10 @@ stages:
   dependsOn: Test
   jobs:
   - job: DeployToProduction
-    environment: 'Production'
+    environment: 'Production'  # This is correctly placed within a job
     steps:
     - task: DownloadBuildArtifacts@0
       inputs:
         artifactName: 'drop'
     - script: echo "Deploying to Production"
-      # Here you would add the steps to deploy to your production environment
-      # This could include steps like applying configurations, starting services, etc.
+      # Add your production deployment steps here
