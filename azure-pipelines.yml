@@ -38,7 +38,7 @@ stages:
   dependsOn: Build
   jobs:
   - job: DeployToStaging
-    environment: 'Staging'  # This is correctly placed within a job
+    environment: Staging  # This is correctly placed within a job
     steps:
     - task: DownloadBuildArtifacts@0
       inputs:
