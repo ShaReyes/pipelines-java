@@ -40,12 +40,12 @@ stages:
   - deployment: DeployToStaging
     environment: 
       name: 'Staging' 
-    steps:
-    - task: DownloadBuildArtifacts@0
-      inputs:
-        artifactName: 'drop'
-    - script: echo "Deploying to Staging"
-      # Add your deployment steps here
+      steps:
+      - task: DownloadBuildArtifacts@0
+        inputs:
+          artifactName: 'drop'
+      - script: echo "Deploying to Staging"
+        # Add your deployment steps here
 
 - stage: Test
   dependsOn: Staging
