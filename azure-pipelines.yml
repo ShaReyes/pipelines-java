@@ -34,7 +34,6 @@ stages:
       inputs:
         pollingTimeoutSec: '300'
 
-stages:
 - stage: Build
   jobs:
   - job: BuildJob
