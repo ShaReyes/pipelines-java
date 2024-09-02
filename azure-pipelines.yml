@@ -4,86 +4,87 @@ trigger:
 pool:
   vmImage: ubuntu-latest
 
-stages: 
-- stage: Build
-  jobs:
-  - job: BuildJob
-    steps:
-    # Preparar análisis de SonarCloud
-    - task: SonarCloudPrepare@2
-      inputs:
-        SonarCloud: 'SonarCloud'  # Nombre de la conexión de servicio en Azure DevOps
-        organization: 'shareyes1'  # Organización en SonarCloud
-        scannerMode: 'CLI'
-        configMode: 'manual'
-        cliProjectKey: 'ShaReyes_pipelines-java'  # Clave del proyecto en SonarCloud
-        cliProjectName: 'pipelines-java'  # Nombre del proyecto en SonarCloud
-        cliProjectVersion: '1.0'  # Versión del proyecto (puedes ajustar este valor)
-        extraProperties: |
-          sonar.sources=src
-          sonar.inclusions=**/azure-pipelines.yml
-          sonar.java.binaries=target/classes
-          sonar.coverage.jacoco.xmlReportPaths=$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml
-          sonar.java.libraries # Incluir todas las librerías (JARs) en el análisis, no esta especificando donde dejar las dependencias empaquetadas
+stages:
+  - stage: Build
+    jobs:
+      - job: BuildJob
+        steps:
+          # Preparar análisis de SonarCloud
+          - task: SonarCloudPrepare@2
+            inputs:
+              SonarCloud: 'SonarCloud'  # Nombre de la conexión de servicio en Azure DevOps
+              organization: 'shareyes1'  # Organización en SonarCloud
+              scannerMode: 'CLI'
+              configMode: 'manual'
+              cliProjectKey: 'ShaReyes_pipelines-java'  # Clave del proyecto en SonarCloud
+              cliProjectName: 'pipelines-java'  # Nombre del proyecto en SonarCloud
+              cliProjectVersion: '1.0'  # Versión del proyecto (puedes ajustar este valor)
+              extraProperties: |
+                sonar.sources=src
+                sonar.inclusions=**/azure-pipelines.yml
+                sonar.java.binaries=target/classes
+                sonar.coverage.jacoco.xmlReportPaths=$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml
+                sonar.java.libraries # Incluir todas las librerías (JARs) en el análisis, no esta especificando donde dejar las dependencias empaquetadas
 
-    # Ejecutar análisis de SonarCloud
-    - task: SonarCloudAnalyze@2
+          # Ejecutar análisis de SonarCloud
+          - task: SonarCloudAnalyze@2
 
-    # Publicar resultados de SonarCloud
-    - task: SonarCloudPublish@2
-      inputs:
-        pollingTimeoutSec: '300'  # Timeout for polling the results
-      # Task to publish SonarCloud analysis results
+          # Publicar resultados de SonarCloud
+          - task: SonarCloudPublish@2
+            inputs:
+              pollingTimeoutSec: '300'  # Timeout for polling the results
+            # Task to publish SonarCloud analysis results
 
-- stage: Staging
-  dependsOn: Build  # This stage depends on the successful completion of the Build stage
-  # The Staging stage is for deploying the build artifacts to a staging environment
-  jobs:
-  - deployment: DeployToStaging
-    environment: 
-      name: 'Staging'  # Name of the staging environment
-    strategy:
-      runOnce:
-        deploy:
-          steps:
-            - task: DownloadBuildArtifacts@0
-              inputs:
-                artifactName: 'drop'  # Name of the artifact to download
+  - stage: Staging
+    dependsOn: Build  # This stage depends on the successful completion of the Build stage
+    # The Staging stage is for deploying the build artifacts to a staging environment
+    jobs:
+      - deployment: DeployToStaging
+        environment: 
+          name: 'Staging'  # Name of the staging environment
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: DownloadBuildArtifacts@0
+                  inputs:
+                    artifactName: 'drop'  # Name of the artifact to download
 
+                - script: echo "Deploying to Staging"
+                  # Add your deployment steps here
+                  # This is a placeholder script for deploying to staging
 
-      - script: echo "Deploying to Staging"
-        # Add your deployment steps here
-        # This is a placeholder script for deploying to staging
+  - stage: Test
+    dependsOn: Staging  # This stage depends on the successful completion of the Staging stage
+    # The Test stage is for running tests and publishing code coverage results
+    jobs:
+      - job: TestJob
+        steps:
+          - script: mvn test
+            # Run unit tests using Maven
 
-- stage: Test
-  dependsOn: Staging  # This stage depends on the successful completion of the Staging stage
-  # The Test stage is for running tests and publishing code coverage results
-  jobs:
-  - job: TestJob
-    steps:
-    - script: mvn test
-      # Run unit tests using Maven
+          - task: PublishCodeCoverageResults@2
+            inputs:
+              codeCoverageTool: "JaCoCo"  # Code coverage tool used
+              summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml"  # Location of the code coverage summary file
+              reportDirectory: "$(System.DefaultWorkingDirectory)/**/site/jacoco"  # Directory for the code coverage report
+              failIfCoverageEmpty: true  # Fail the build if coverage is empty
 
-    - task: PublishCodeCoverageResults@2
-      inputs:
-        codeCoverageTool: "JaCoCo"  # Code coverage tool used
-        summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml"  # Location of the code coverage summary file
-        reportDirectory: "$(System.DefaultWorkingDirectory)/**/site/jacoco"  # Directory for the code coverage report
-        failIfCoverageEmpty: true  # Fail the build if coverage is empty
+  - stage: Production
+    dependsOn: Test  # This stage depends on the successful completion of the Test stage
+    # The Production stage is for deploying the build artifacts to the production environment
+    jobs:
+      - deployment: DeployToProduction
+        environment: 
+          name: 'Production'  # Name of the production environment
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - task: DownloadBuildArtifacts@0
+                  inputs:
+                    artifactName: 'drop'  # Name of the artifact to download
 
-- stage: Production
-  dependsOn: Test  # This stage depends on the successful completion of the Test stage
-  # The Production stage is for deploying the build artifacts to the production environment
-  jobs:
-  - deployment: DeployToProduction
-    environment: 
-      name: 'Production'  # Name of the production environment
-    steps:
-    - task: DownloadBuildArtifacts@0
-      inputs:
-        artifactName: 'drop'  # Name of the artifact to download
-      # Task to download build artifacts for production deployment
-
-    - script: echo "Deploying to Production"
-      # Add your production deployment steps here
-      # This is a placeholder script for deploying to production
+                - script: echo "Deploying to Production"
+                  # Add your production deployment steps here
+                  # This is a placeholder script for deploying to production
