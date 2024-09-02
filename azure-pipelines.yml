@@ -46,18 +46,21 @@ stages:
       inputs:
         pollingTimeoutSec: '300'
 
-- stage: Deploy
+- stage: Staging
   dependsOn: Build
   jobs:
-  - job: DeployJob
+  - job: DeployToStaging
+    environment: 'Staging'
     steps:
-    - task: PublishBuildArtifacts@1
+    - task: DownloadBuildArtifacts@0
       inputs:
-        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
         artifactName: 'drop'
-        
+    - script: echo "Desplegando a Staging"
+      # Aquí agregarías los pasos para desplegar a tu environment de staging
+      # Podría incluir la publicación de la aplicación, configuración, etc.
+
 - stage: Test
-  dependsOn: Build
+  dependsOn: Staging
   jobs:
   - job: TestJob
     steps:
@@ -68,3 +71,15 @@ stages:
         summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml"
         reportDirectory: "$(System.DefaultWorkingDirectory)/**/site/jacoco"
         failIfCoverageEmpty: true
+
+- stage: Production
+  dependsOn: Test
+  jobs:
+  - job: DeployToProduction
+    environment: 'Production'
+    steps:
+    - task: DownloadBuildArtifacts@0
+      inputs:
+        artifactName: 'drop'
+    - script: echo "Desplegando a Producción"
+      # Aquí agregarías los pasos para desplegar a tu environment de producción
