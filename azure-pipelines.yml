@@ -35,6 +35,14 @@ stages:
               pollingTimeoutSec: '300'  # Timeout for polling the results
             # Task to publish SonarCloud analysis results
 
+
+          # Publicar artefactos de compilación
+          - task: PublishBuildArtifacts@1
+            inputs:
+              PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+              ArtifactName: 'drop'
+              publishLocation: 'Container'
+
   - stage: Staging
     dependsOn: Build  # This stage depends on the successful completion of the Build stage
     # The Staging stage is for deploying the build artifacts to a staging environment
