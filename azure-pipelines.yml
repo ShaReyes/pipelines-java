@@ -37,7 +37,7 @@ stages:
 - stage: Staging
   dependsOn: Build
   jobs:
-  - deploymentjob: DeployToStaging
+  - deployment: DeployToStaging
     environment: 
     name: 'Staging' 
     steps:
@@ -63,7 +63,7 @@ stages:
 - stage: Production
   dependsOn: Test
   jobs:
-  - productionjob: DeployToProduction
+  - production: DeployToProduction
     environment: 
     name: 'Production'  
     steps:
