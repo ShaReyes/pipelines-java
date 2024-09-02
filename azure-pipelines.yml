@@ -26,7 +26,22 @@ stages:
           sonar.coverage.jacoco.xmlReportPaths=$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml
           sonar.java.libraries # Incluir todas las librerías (JARs) en el análisis, no esta especificando donde dejar las dependencias empaquetadas
 
-    # Construir el proyecto con Maven
+    # Ejecutar análisis de SonarCloud
+    - task: SonarCloudAnalyze@2
+
+    # Publicar resultados de SonarCloud
+    - task: SonarCloudPublish@2
+      inputs:
+        pollingTimeoutSec: '300'
+
+stages:
+- stage: Build
+  jobs:
+  - job: BuildJob
+    steps:
+    - script: echo "Building the application"
+    
+    # Additional build steps here
     - task: Maven@4
       inputs:
         mavenPomFile: 'pom.xml'
@@ -37,27 +52,23 @@ stages:
         publishJUnitResults: true
         testResultsFiles: '**/surefire-reports/TEST-*.xml'
         goals: 'package'
-
-    # Ejecutar análisis de SonarCloud
-    - task: SonarCloudAnalyze@2
-
-    # Publicar resultados de SonarCloud
-    - task: SonarCloudPublish@2
+    - task: PublishBuildArtifacts@1
       inputs:
-        pollingTimeoutSec: '300'
+        pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        artifactName: 'drop'
 
 - stage: Staging
   dependsOn: Build
   jobs:
   - job: DeployToStaging
-    environment: Staging
+    environment: 'Staging'
     steps:
     - task: DownloadBuildArtifacts@0
       inputs:
         artifactName: 'drop'
-    - script: echo "Desplegando a Staging"
-      # Aquí agregarías los pasos para desplegar a tu environment de staging
-      # Podría incluir la publicación de la aplicación, configuración, etc.
+    - script: echo "Deploying to Staging"
+      # Here you would add the steps to deploy to your staging environment
+      # This could include publishing the application, configuring settings, etc.
 
 - stage: Test
   dependsOn: Staging
@@ -81,5 +92,6 @@ stages:
     - task: DownloadBuildArtifacts@0
       inputs:
         artifactName: 'drop'
-    - script: echo "Desplegando a Producción"
-      # Aquí agregarías los pasos para desplegar a tu environment de producción
+    - script: echo "Deploying to Production"
+      # Here you would add the steps to deploy to your production environment
+      # This could include steps like applying configurations, starting services, etc.
