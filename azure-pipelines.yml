@@ -39,7 +39,7 @@ stages:
   jobs:
   - deployment: DeployToStaging
     environment: 
-    name: 'Staging' 
+      name: 'Staging' 
     steps:
     - task: DownloadBuildArtifacts@0
       inputs:
@@ -65,7 +65,7 @@ stages:
   jobs:
   - production: DeployToProduction
     environment: 
-    name: 'Production'  
+      name: 'Production'  
     steps:
     - task: DownloadBuildArtifacts@0
       inputs:
