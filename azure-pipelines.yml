@@ -35,17 +35,18 @@ stages:
         pollingTimeoutSec: '300'
 
 - stage: Staging
-  dependsOn: Build
-  jobs:
+dependsOn: Build
+jobs:
   - deployment: DeployToStaging
     environment: 
-      name: 'Staging' 
-      steps:
+      name: 'Staging'
+    steps:
       - task: DownloadBuildArtifacts@0
         inputs:
           artifactName: 'drop'
       - script: echo "Deploying to Staging"
         # Add your deployment steps here
+
 
 - stage: Test
   dependsOn: Staging
