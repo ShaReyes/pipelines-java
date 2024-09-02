@@ -32,44 +32,55 @@ stages:
     # Publicar resultados de SonarCloud
     - task: SonarCloudPublish@2
       inputs:
-        pollingTimeoutSec: '300'
+        pollingTimeoutSec: '300'  # Timeout for polling the results
+      # Task to publish SonarCloud analysis results
 
 - stage: Staging
-dependsOn: Build
-jobs:
+  dependsOn: Build  # This stage depends on the successful completion of the Build stage
+  # The Staging stage is for deploying the build artifacts to a staging environment
+  jobs:
   - deployment: DeployToStaging
     environment: 
-      name: 'Staging'
+      name: 'Staging'  # Name of the staging environment
     steps:
       - task: DownloadBuildArtifacts@0
         inputs:
-          artifactName: 'drop'
+          artifactName: 'drop'  # Name of the artifact to download
+        # Task to download build artifacts
+
       - script: echo "Deploying to Staging"
         # Add your deployment steps here
-
+        # This is a placeholder script for deploying to staging
 
 - stage: Test
-  dependsOn: Staging
+  dependsOn: Staging  # This stage depends on the successful completion of the Staging stage
+  # The Test stage is for running tests and publishing code coverage results
   jobs:
   - job: TestJob
     steps:
     - script: mvn test
+      # Run unit tests using Maven
+
     - task: PublishCodeCoverageResults@2
       inputs:
-        codeCoverageTool: "JaCoCo"
-        summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml"
-        reportDirectory: "$(System.DefaultWorkingDirectory)/**/site/jacoco"
-        failIfCoverageEmpty: true
+        codeCoverageTool: "JaCoCo"  # Code coverage tool used
+        summaryFileLocation: "$(System.DefaultWorkingDirectory)/**/site/jacoco/jacoco.xml"  # Location of the code coverage summary file
+        reportDirectory: "$(System.DefaultWorkingDirectory)/**/site/jacoco"  # Directory for the code coverage report
+        failIfCoverageEmpty: true  # Fail the build if coverage is empty
 
 - stage: Production
-  dependsOn: Test
+  dependsOn: Test  # This stage depends on the successful completion of the Test stage
+  # The Production stage is for deploying the build artifacts to the production environment
   jobs:
-  - production: DeployToProduction
+  - deployment: DeployToProduction
     environment: 
-      name: 'Production'  
+      name: 'Production'  # Name of the production environment
     steps:
     - task: DownloadBuildArtifacts@0
       inputs:
-        artifactName: 'drop'
+        artifactName: 'drop'  # Name of the artifact to download
+      # Task to download build artifacts for production deployment
+
     - script: echo "Deploying to Production"
       # Add your production deployment steps here
+      # This is a placeholder script for deploying to production
